@@ -10,7 +10,7 @@ const ProductDetail = () => {
   const { id } = useParams();
   const product = useRecoilValue(getProductById(id));
   const [cart, setCart] = useRecoilState(cartState);
-
+  console.log("Test");
   const HandleAddProduct = () => {
     const item = cart.hasOwnProperty(id)
       ? cart[product.id]
