@@ -38,9 +38,10 @@ export const getProductsByCategory = selectorFamily({
 
 export const getProductById = selectorFamily({
   key: "getProductByIdState",
-  get: (id) => async () => {
-    const res = await fetch(`https://fakestoreapi.com/products/${id}`);
-    const product = await res.json();
-    return product;
-  },
+  get:
+    (id) =>
+    ({ get }) => {
+      const productList = get(getProducts);
+      return productList.find((product) => product.id === Number(id));
+    },
 });
