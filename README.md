@@ -1,3 +1,3 @@
 # ReactShop
 
-[ReactShop 링크](https://6293675b2820433c9f9199ce--react-shop-gb.netlify.app)
+[ReactShop 링크](https://629e2e0e7ea5355f1069c527--react-shop-gb.netlify.app/)
