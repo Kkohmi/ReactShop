@@ -5,12 +5,16 @@ import { BiMoon } from "react-icons/bi";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import { cartState } from "../store/atom";
+import { cartState, getProducts } from "../store/atom";
 import Menubar from "./Menubar";
+import SearchResult from "./SearchResult";
 
 const Header = ({ handleThemeMode, themeMode }) => {
   const [layout, setLayout] = useState(null);
   const [toggleMenuBar, setToggleMenuBar] = useState(false);
+  const products = useRecoilValue(getProducts);
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [searchResult, setSearchResult] = useState([]);
   const history = useNavigate();
   const cart = useRecoilValue(cartState);
 
@@ -19,6 +23,15 @@ const Header = ({ handleThemeMode, themeMode }) => {
     window.addEventListener("resize", handleLayout);
     return () => window.removeEventListener("resize", handleLayout);
   }, []);
+
+  useEffect(() => {
+    if (!searchKeyword) setSearchResult([]);
+    else {
+      setSearchResult(
+        products.filter((product) => product.title.includes(searchKeyword))
+      );
+    }
+  }, [searchKeyword]);
 
   const handleCartLink = () => {
     history("/cart");
@@ -41,6 +54,11 @@ const Header = ({ handleThemeMode, themeMode }) => {
 
   const handleOpenMenuBar = (e) => {
     setToggleMenuBar(true);
+  };
+
+  const handleRearchResultReset = () => {
+    setSearchKeyword("");
+    setSearchResult([]);
   };
 
   return (
@@ -86,7 +104,20 @@ const Header = ({ handleThemeMode, themeMode }) => {
               />
             )}
           </button>
-          <input type="text" placeholder="검색" />
+          <div>
+            <input
+              type="text"
+              placeholder="검색"
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
+            />
+            {searchResult.length !== 0 && (
+              <SearchResult
+                searchResult={searchResult}
+                handleRearchResultReset={handleRearchResultReset}
+              />
+            )}
+          </div>
           <button onClick={handleCartLink}>
             <div className="shopping-count">{Object.keys(cart).length}</div>
             <MdOutlineShoppingBag
@@ -152,14 +183,17 @@ const EtcBar = styled.div`
   display: flex;
   align-items: center;
   margin-left: auto;
-  input {
-    height: 48px;
-    width: 222px;
-    border: none;
-    outline: none;
-    border-radius: 5px;
-    padding: 0 16px;
-    background-color: ${({ theme }) => theme.input.background};
+  div {
+    position: relative;
+    input {
+      height: 48px;
+      width: 222px;
+      border: none;
+      outline: none;
+      border-radius: 5px;
+      padding: 0 16px;
+      background-color: ${({ theme }) => theme.input.background};
+    }
   }
 
   button {
